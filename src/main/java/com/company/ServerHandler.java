@@ -1,9 +1,6 @@
 package com.company;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SealedObject;
+import javax.crypto.*;
 import java.io.*;
 import java.net.Socket;
 import java.security.*;
@@ -30,7 +27,6 @@ public class ServerHandler implements Runnable{
 
     public void run() {
 
-        int index = 0 ;
         User user = new User() ;
         ObjectInputStream objectInputStream = null;
         ObjectOutputStream objectOutputStream = null;
@@ -46,36 +42,38 @@ public class ServerHandler implements Runnable{
             user.setPublicKey(userPublicKey);
             String userName = (String) objectInputStream.readObject();
             user.setUserName(userName);
-            user.setObjectInputStream(objectInputStream);
-            user.setObjectOutputStream(objectOutputStream);
+            UserCertificate userCertificate = new UserCertificate(userPublicKey,userName );
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            byte [] userByteArray = messageDigest.digest(CertificateCreateUtil.toByteArray(userCertificate));
+            Cipher privateEncryptCipher = Cipher
+                    .getInstance("RSA");
+            privateEncryptCipher.init(Cipher.ENCRYPT_MODE, privateKeyServer);
+            byte[] encryptedFirstString = privateEncryptCipher.doFinal(userByteArray);
+            objectOutputStream.writeObject(encryptedFirstString);
+            objectOutputStream.writeObject(publicKeyServer);
 
-			/*
-			 * UserCertificate userCertificate = new UserCertificate(userPublicKey,userName
-			 * ); System.out.println(userCertificate); SealedObject sealedObject =
-			 * CertificateCreateUtil.encryptObject(userCertificate, privateKey);
-			 * System.out.println(sealedObject); User userdeneme = (User)
-			 * CertificateCreateUtil.decryptObject(sealedObject, publicKey);
-			 * System.out.println(userdeneme.getUserName());
-			 */
 
-            final X509Certificate cert = SelfSignedCertGenerator.generate("SHA256withRSA", "localhost", 730, userPublicKey, Server.privateKey);
-            System.out.println("bohohohohyt " + cert.getPublicKey() + " asddasads " + cert.getSerialNumber());
+
             while (true){
 
-                String imageMessage = (String) objectInputStream.readObject();
+
+                System.out.println("deneme :" );
+                Scanner scanner = new Scanner(System.in);
+                String fileName = scanner.nextLine();
+                objectOutputStream.writeObject(fileName);
 
 
 
 
-
-
-                if(imageMessage.equals("break")){
-                    break;
-                }
 
             }
 
 
+
+       } catch (IOException | ClassNotFoundException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException  | BadPaddingException e) {
+           e.printStackTrace();
+       }
+        }
 
        } catch (IOException | ClassNotFoundException e/*| NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException| SignatureException e*/) {
            e.printStackTrace();
@@ -91,52 +89,10 @@ public class ServerHandler implements Runnable{
 			e.printStackTrace();
 		}
 
-
-//        PrintWriter out = null;
-//        BufferedReader in = null;
-//        try {
-//
-//            // get the outputstream of client
-//            out = new PrintWriter(
-//                    socket.getOutputStream(), true);
-//
-//            // get the inputstream of client
-//            in = new BufferedReader(
-//                    new InputStreamReader(
-//                            socket.getInputStream()));
-//
-//            String line;
-//            while ((line = in.readLine()) != null) {
-//
-//                // writing the received message from
-//                // client
-//                System.out.printf(
-//                        " Sent from the client: %s\n",
-//                        line);
-//                out.println(line);
-//            }
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        finally {
-//            try {
-//                if (out != null) {
-//                    out.close();
-//                }
-//                if (in != null) {
-//                    in.close();
-//                    socket.close();
-//                }
-//            }
-//            catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
 
 
 
-    }
+
 

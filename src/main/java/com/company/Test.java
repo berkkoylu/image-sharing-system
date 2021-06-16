@@ -1,5 +1,6 @@
 package com.company;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,31 +68,37 @@ public class Test {
     public static void main(String[] args) throws Exception {
         try {
 
+
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
             KeyPairGenerator keyPairGeneratorw = KeyPairGenerator.getInstance("RSA");
             keyPairGeneratorw.initialize(512);
             KeyPair keyPair2 = keyPairGeneratorw.generateKeyPair();
             Key publicas = keyPair2.getPublic();
 
             KeyPairGenerator keyPairGenerator =  KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(4096);
+            keyPairGenerator.initialize(2048);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
             Key publicKey = keyPair.getPublic();
             Key privateKey = keyPair.getPrivate();
 
-
             User user =  new User();
+            user.setUserName("berk");
+            user.setPublicKey(publicas);
+
+            User userw =  new User();
+            user.setUserName("berk");
+            byte [] deneme2 = md.digest(toByteArray(userw));
 
 
 
-            Gson gson =  new Gson();
-
-            String deneme = gson.toJson(user);
+            byte [] deneme = md.digest(toByteArray(user));
 
             Cipher privateEncryptCipher = Cipher
                     .getInstance("RSA/ECB/PKCS1Padding");
             privateEncryptCipher.init(Cipher.ENCRYPT_MODE, privateKey);
 
-            byte[] encryptedFirstString = privateEncryptCipher.doFinal(deneme.getBytes(StandardCharsets.UTF_8));
+            byte[] encryptedFirstString = privateEncryptCipher.doFinal(deneme);
 
 
             Cipher publicDecryptCipher = Cipher
@@ -100,10 +107,8 @@ public class Test {
             byte[] decryptedFirstStringByte = publicDecryptCipher
                     .doFinal(encryptedFirstString);
 
-            User car = gson.fromJson(decryptedFirstStringByte.toString(),User.class);
 
-
-            System.out.println(car.getUserName());
+            System.out.println(Arrays.equals(deneme2, decryptedFirstStringByte));
 
 
 

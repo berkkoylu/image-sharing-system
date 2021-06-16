@@ -3,6 +3,9 @@ package com.company;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,21 +14,22 @@ import java.util.concurrent.Executors;
 
 public class Server {
     public static final Set<User> userSet = new HashSet<>();
-    public static PublicKey publicKey ;
-    public static PrivateKey privateKey ;
+    public static PublicKey publicKeyServer ;
+    public static PrivateKey privateKeyServer ;
 
-    public Server() throws NoSuchAlgorithmException {
-
-    }
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 
         // write your code here
         KeyPairGenerator keyPairGenerator =  KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(4096);
+        keyPairGenerator.initialize(2048);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        publicKey = keyPair.getPublic();
-        privateKey = keyPair.getPrivate();
+        publicKeyServer = keyPair.getPublic();
+        privateKeyServer = keyPair.getPrivate();
+
+        String projectPath = "/Users/berkkoylu/IdeaProjects/image-sharing-system/image/server";
+        Path path = Paths.get(projectPath);
+        Files.createDirectories(path);
 
         System.out.println("Server is running");
         ExecutorService pool = Executors.newFixedThreadPool(500);
