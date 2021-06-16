@@ -3,6 +3,9 @@ package com.company;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,10 +17,6 @@ public class Server {
     public static PublicKey publicKeyServer ;
     public static PrivateKey privateKeyServer ;
 
-    public Server() throws NoSuchAlgorithmException {
-
-    }
-
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 
@@ -27,6 +26,10 @@ public class Server {
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         publicKeyServer = keyPair.getPublic();
         privateKeyServer = keyPair.getPrivate();
+
+        String projectPath = "/Users/berkkoylu/IdeaProjects/image-sharing-system/image/server";
+        Path path = Paths.get(projectPath);
+        Files.createDirectories(path);
 
         System.out.println("Server is running");
         ExecutorService pool = Executors.newFixedThreadPool(500);

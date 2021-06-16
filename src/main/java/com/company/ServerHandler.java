@@ -25,7 +25,6 @@ public class ServerHandler implements Runnable{
 
     public void run() {
 
-        int index = 0 ;
         User user = new User() ;
         ObjectInputStream objectInputStream = null;
         ObjectOutputStream objectOutputStream = null;
@@ -41,33 +40,29 @@ public class ServerHandler implements Runnable{
             user.setPublicKey(userPublicKey);
             String userName = (String) objectInputStream.readObject();
             user.setUserName(userName);
-
             UserCertificate userCertificate = new UserCertificate(userPublicKey,userName );
-
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
             byte [] userByteArray = messageDigest.digest(CertificateCreateUtil.toByteArray(userCertificate));
             Cipher privateEncryptCipher = Cipher
                     .getInstance("RSA");
-
             privateEncryptCipher.init(Cipher.ENCRYPT_MODE, privateKeyServer);
-
             byte[] encryptedFirstString = privateEncryptCipher.doFinal(userByteArray);
-
             objectOutputStream.writeObject(encryptedFirstString);
             objectOutputStream.writeObject(publicKeyServer);
 
 
 
-
             while (true){
 
-                String imageMessage = (String) objectInputStream.readObject();
+
+                System.out.println("deneme :" );
+                Scanner scanner = new Scanner(System.in);
+                String fileName = scanner.nextLine();
+                objectOutputStream.writeObject(fileName);
 
 
 
-                if(imageMessage.equals("break")){
-                    break;
-                }
+
 
             }
 
