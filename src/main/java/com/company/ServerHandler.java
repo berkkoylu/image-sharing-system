@@ -4,9 +4,11 @@ import javax.crypto.*;
 import java.io.*;
 import java.net.Socket;
 import java.security.*;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
+import org.bouncycastle.operator.OperatorCreationException;
+
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import static com.company.Server.*;
 
@@ -36,7 +38,7 @@ public class ServerHandler implements Runnable{
             objectOutputStream  = new ObjectOutputStream(socket.getOutputStream());
             objectOutputStream.writeObject(welcomeMessage);
 
-            Key userPublicKey = (Key) objectInputStream.readObject();
+            PublicKey userPublicKey = (PublicKey) objectInputStream.readObject();
             user.setPublicKey(userPublicKey);
             String userName = (String) objectInputStream.readObject();
             user.setUserName(userName);
@@ -73,47 +75,20 @@ public class ServerHandler implements Runnable{
        }
         }
 
-//        PrintWriter out = null;
-//        BufferedReader in = null;
-//        try {
-//
-//            // get the outputstream of client
-//            out = new PrintWriter(
-//                    socket.getOutputStream(), true);
-//
-//            // get the inputstream of client
-//            in = new BufferedReader(
-//                    new InputStreamReader(
-//                            socket.getInputStream()));
-//
-//            String line;
-//            while ((line = in.readLine()) != null) {
-//
-//                // writing the received message from
-//                // client
-//                System.out.printf(
-//                        " Sent from the client: %s\n",
-//                        line);
-//                out.println(line);
-//            }
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        finally {
-//            try {
-//                if (out != null) {
-//                    out.close();
-//                }
-//                if (in != null) {
-//                    in.close();
-//                    socket.close();
-//                }
-//            }
-//            catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
+       } catch (IOException | ClassNotFoundException e/*| NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException| SignatureException e*/) {
+           e.printStackTrace();
+       } /*catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }*/ catch (OperatorCreationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
     }
 
 

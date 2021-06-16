@@ -6,11 +6,17 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.net.Socket;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.*;
 import java.util.Arrays;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.util.Scanner;
 
 public class ClientServer  {
@@ -20,7 +26,7 @@ public class ClientServer  {
         KeyPairGenerator keyPairGenerator =  KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        Key publicKey = keyPair.getPublic();
+        PublicKey publicKey = keyPair.getPublic();
         Key privateKey = keyPair.getPrivate();
 
 
