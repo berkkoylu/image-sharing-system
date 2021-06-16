@@ -11,21 +11,22 @@ import java.util.concurrent.Executors;
 
 public class Server {
     public static final Set<User> userSet = new HashSet<>();
-    public static PublicKey publicKey ;
-    public static PrivateKey privateKey ;
+    public static PublicKey publicKeyServer ;
+    public static PrivateKey privateKeyServer ;
 
     public Server() throws NoSuchAlgorithmException {
 
     }
 
+
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 
         // write your code here
         KeyPairGenerator keyPairGenerator =  KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(4096);
+        keyPairGenerator.initialize(2048);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        publicKey = keyPair.getPublic();
-        privateKey = keyPair.getPrivate();
+        publicKeyServer = keyPair.getPublic();
+        privateKeyServer = keyPair.getPrivate();
 
         System.out.println("Server is running");
         ExecutorService pool = Executors.newFixedThreadPool(500);

@@ -1,9 +1,6 @@
 package com.company;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SealedObject;
+import javax.crypto.*;
 import java.io.*;
 import java.net.Socket;
 import java.security.*;
@@ -44,22 +41,27 @@ public class ServerHandler implements Runnable{
             user.setPublicKey(userPublicKey);
             String userName = (String) objectInputStream.readObject();
             user.setUserName(userName);
-            user.setObjectInputStream(objectInputStream);
-            user.setObjectOutputStream(objectOutputStream);
 
             UserCertificate userCertificate = new UserCertificate(userPublicKey,userName );
-            System.out.println(userCertificate);
-            SealedObject sealedObject = CertificateCreateUtil.encryptObject(userCertificate, privateKey);
-            System.out.println(sealedObject);
-            User userdeneme = (User) CertificateCreateUtil.decryptObject(sealedObject, publicKey);
-            System.out.println(userdeneme.getUserName());
+
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            byte [] userByteArray = messageDigest.digest(CertificateCreateUtil.toByteArray(userCertificate));
+            Cipher privateEncryptCipher = Cipher
+                    .getInstance("RSA");
+
+            privateEncryptCipher.init(Cipher.ENCRYPT_MODE, privateKeyServer);
+
+            byte[] encryptedFirstString = privateEncryptCipher.doFinal(userByteArray);
+
+            objectOutputStream.writeObject(encryptedFirstString);
+            objectOutputStream.writeObject(publicKeyServer);
+
+
+
 
             while (true){
 
                 String imageMessage = (String) objectInputStream.readObject();
-
-
-
 
 
 
@@ -71,14 +73,10 @@ public class ServerHandler implements Runnable{
 
 
 
-       } catch (IOException | ClassNotFoundException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException| SignatureException e) {
+       } catch (IOException | ClassNotFoundException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException  | BadPaddingException e) {
            e.printStackTrace();
-       } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
+       }
         }
-
 
 //        PrintWriter out = null;
 //        BufferedReader in = null;
@@ -126,5 +124,5 @@ public class ServerHandler implements Runnable{
 
 
 
-    }
+
 
