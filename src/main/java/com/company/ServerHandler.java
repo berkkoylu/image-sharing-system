@@ -56,16 +56,13 @@ public class ServerHandler implements Runnable{
 
             while (true){
 
-
                 System.out.println("deneme :" );
                 Scanner scanner = new Scanner(System.in);
                 String fileName = scanner.nextLine();
                 objectOutputStream.writeObject(fileName);
 
 
-
-
-
+                
             }
 
 
@@ -75,21 +72,9 @@ public class ServerHandler implements Runnable{
        }
         }
 
-       } catch (IOException | ClassNotFoundException e/*| NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException| SignatureException e*/) {
-           e.printStackTrace();
-       } /*catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        }*/ catch (OperatorCreationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CertificateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+}
 
-    }
+
 
 
 
