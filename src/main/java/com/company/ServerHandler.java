@@ -7,9 +7,11 @@ import javax.crypto.SealedObject;
 import java.io.*;
 import java.net.Socket;
 import java.security.*;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
+import org.bouncycastle.operator.OperatorCreationException;
+
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import static com.company.Server.*;
 
@@ -40,20 +42,24 @@ public class ServerHandler implements Runnable{
             objectOutputStream  = new ObjectOutputStream(socket.getOutputStream());
             objectOutputStream.writeObject(welcomeMessage);
 
-            Key userPublicKey = (Key) objectInputStream.readObject();
+            PublicKey userPublicKey = (PublicKey) objectInputStream.readObject();
             user.setPublicKey(userPublicKey);
             String userName = (String) objectInputStream.readObject();
             user.setUserName(userName);
             user.setObjectInputStream(objectInputStream);
             user.setObjectOutputStream(objectOutputStream);
 
-            UserCertificate userCertificate = new UserCertificate(userPublicKey,userName );
-            System.out.println(userCertificate);
-            SealedObject sealedObject = CertificateCreateUtil.encryptObject(userCertificate, privateKey);
-            System.out.println(sealedObject);
-            User userdeneme = (User) CertificateCreateUtil.decryptObject(sealedObject, publicKey);
-            System.out.println(userdeneme.getUserName());
+			/*
+			 * UserCertificate userCertificate = new UserCertificate(userPublicKey,userName
+			 * ); System.out.println(userCertificate); SealedObject sealedObject =
+			 * CertificateCreateUtil.encryptObject(userCertificate, privateKey);
+			 * System.out.println(sealedObject); User userdeneme = (User)
+			 * CertificateCreateUtil.decryptObject(sealedObject, publicKey);
+			 * System.out.println(userdeneme.getUserName());
+			 */
 
+            final X509Certificate cert = SelfSignedCertGenerator.generate("SHA256withRSA", "localhost", 730, userPublicKey, Server.privateKey);
+            System.out.println("bohohohohyt " + cert.getPublicKey() + " asddasads " + cert.getSerialNumber());
             while (true){
 
                 String imageMessage = (String) objectInputStream.readObject();
@@ -71,13 +77,19 @@ public class ServerHandler implements Runnable{
 
 
 
-       } catch (IOException | ClassNotFoundException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException| SignatureException e) {
+       } catch (IOException | ClassNotFoundException e/*| NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException| SignatureException e*/) {
            e.printStackTrace();
-       } catch (InvalidAlgorithmParameterException e) {
+       } /*catch (InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         } catch (BadPaddingException e) {
             e.printStackTrace();
-        }
+        }*/ catch (OperatorCreationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 
 //        PrintWriter out = null;
