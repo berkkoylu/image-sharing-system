@@ -1,4 +1,6 @@
-package com.company;
+package com.company.client;
+
+import com.company.client.model.UserCertificate;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -29,10 +31,8 @@ public class ClientServer  {
         PublicKey publicKey = keyPair.getPublic();
         Key privateKey = keyPair.getPrivate();
 
-
-        try (Socket socket = new Socket("localhost", 8080)) {
-
-
+        Socket socket = new Socket("localhost", 8080);
+        try  {
 
 
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -54,8 +54,6 @@ public class ClientServer  {
 
             Cipher publicDecryptCipher = Cipher
                     .getInstance("RSA");
-
-
             publicDecryptCipher.init(Cipher.DECRYPT_MODE, serverPublicKeyClient);
             byte[] decryptedFirstStringByte = publicDecryptCipher
                     .doFinal(encryptedFirstString);
@@ -70,63 +68,21 @@ public class ClientServer  {
                 System.out.println("Certificate Denied");
             }
 
-            new ClientReadThread( objectInputStream );
+
+            new ClientWriteThread(objectOutputStream,socket, scanner, line, privateKey, (PublicKey) serverPublicKeyClient).start();
+            new ClientReadThread(objectInputStream,socket,scanner).start();
 
 
-            while(true){
 
-                System.out.print("Enter the name of the image file to Upload: ");
-                String fileName = scanner.nextLine();
-                byte [] imageByteArray = getFile(fileName,projectPath);
-
-
-                if(line.equals("exit")){
-                    break;
-                }
-
-            }
-
-            System.out.println("Bye");
-            // closing the scanner object
-            scanner.close();
         }
-        catch (IOException | ClassNotFoundException | NoSuchPaddingException | InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
+        catch (IOException | ClassNotFoundException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
+
+
     }
 
-    public static byte[] getFile(String fileName, String projectPath) {
 
-        fileName = fileName + projectPath;
-
-        File f = new File(fileName);
-        InputStream is = null;
-        try {
-            is = new FileInputStream(f);
-        } catch (FileNotFoundException e2) {
-            // TODO Auto-generated catch block
-            e2.printStackTrace();
-        }
-        byte[] content = null;
-        try {
-            content = new byte[is.available()];
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        try {
-            is.read(content);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return content;
-    }
 
 
 }

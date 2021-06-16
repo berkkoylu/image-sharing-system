@@ -1,4 +1,4 @@
-package com.company;
+package com.company.client;
 
 import javax.crypto.*;
 import java.io.*;

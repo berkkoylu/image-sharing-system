@@ -1,4 +1,4 @@
-package com.company.client;
+package com.company.client.model;
 
 import java.io.Serializable;
 import java.security.Key;

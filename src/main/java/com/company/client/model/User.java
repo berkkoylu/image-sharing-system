@@ -1,4 +1,4 @@
-package com.company.client;
+package com.company.client.model;
 
 import java.io.*;
 import java.security.Key;
@@ -10,13 +10,13 @@ public class User implements Serializable {
     private Key publicKey;
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
-    private UserCertificate userCertificate;
+    private byte[] userCertificate;
 
     public User() {
 
     }
 
-    public User(String userName, Key publicKey, ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream, UserCertificate userCertificate) {
+    public User(String userName, Key publicKey, ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream, byte[] userCertificate) {
         this.userName = userName;
         this.publicKey = publicKey;
         this.objectInputStream = objectInputStream;
@@ -24,15 +24,13 @@ public class User implements Serializable {
         this.userCertificate = userCertificate;
     }
 
-    public UserCertificate getUserCertificate() {
+    public byte[] getUserCertificate() {
         return userCertificate;
     }
 
-    public void setUserCertificate(UserCertificate userCertificate) {
+    public void setUserCertificate(byte[] userCertificate) {
         this.userCertificate = userCertificate;
     }
-
-
 
     public ObjectInputStream getObjectInputStream() {
         return objectInputStream;
