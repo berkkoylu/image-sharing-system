@@ -1,8 +1,7 @@
-package com.company;
+package com.company.client;
 
 import java.io.*;
 import java.security.Key;
-import java.security.PublicKey;
 
 
 public class User implements Serializable {

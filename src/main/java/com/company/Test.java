@@ -1,19 +1,21 @@
 package com.company;
 
 
+import com.company.client.model.User;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
 
-import com.google.gson.Gson;
 
 public class Test {
     /**

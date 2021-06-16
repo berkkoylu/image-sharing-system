@@ -73,22 +73,11 @@ public class ClientServer  {
             new ClientReadThread( objectInputStream );
 
 
-
             while(true){
 
                 System.out.print("Enter the name of the image file to Upload: ");
                 String fileName = scanner.nextLine();
                 byte [] imageByteArray = getFile(fileName,projectPath);
-
-
-
-
-
-
-
-
-
-
 
 
                 if(line.equals("exit")){

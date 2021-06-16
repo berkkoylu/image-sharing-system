@@ -1,16 +1,18 @@
-package com.company;
+package com.company.server;
 
 import javax.crypto.*;
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.security.*;
 import java.util.Scanner;
-import org.bouncycastle.operator.OperatorCreationException;
 
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
+import com.company.client.CertificateCreateUtil;
+import com.company.client.model.ImageDto;
+import com.company.client.model.User;
+import com.company.client.model.UserCertificate;
 
-import static com.company.Server.*;
+import static com.company.server.Server.*;
 
 public class ServerHandler implements Runnable{
 
@@ -39,9 +41,8 @@ public class ServerHandler implements Runnable{
             objectOutputStream.writeObject(welcomeMessage);
 
             PublicKey userPublicKey = (PublicKey) objectInputStream.readObject();
-            user.setPublicKey(userPublicKey);
             String userName = (String) objectInputStream.readObject();
-            user.setUserName(userName);
+
             UserCertificate userCertificate = new UserCertificate(userPublicKey,userName );
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
             byte [] userByteArray = messageDigest.digest(CertificateCreateUtil.toByteArray(userCertificate));
@@ -49,22 +50,29 @@ public class ServerHandler implements Runnable{
                     .getInstance("RSA");
             privateEncryptCipher.init(Cipher.ENCRYPT_MODE, privateKeyServer);
             byte[] encryptedFirstString = privateEncryptCipher.doFinal(userByteArray);
+
             objectOutputStream.writeObject(encryptedFirstString);
             objectOutputStream.writeObject(publicKeyServer);
 
 
+            user.setPublicKey(userPublicKey);
+            user.setUserName(userName);
+            user.setObjectInputStream(objectInputStream);
+            user.setObjectOutputStream(objectOutputStream);
+            user.setUserCertificate(encryptedFirstString);
+            userSet.add(user);
+
 
             while (true){
+                    ImageDto imageDto = (ImageDto) objectInputStream.readObject();
+                    imageHashSet.put(userName, imageDto);
 
-                System.out.println("deneme :" );
-                Scanner scanner = new Scanner(System.in);
-                String fileName = scanner.nextLine();
-                objectOutputStream.writeObject(fileName);
-
-
-                
+                for (User userM :
+                        userSet) {
+                    ObjectOutputStream objectOutputStream1 = userM.getObjectOutputStream();
+                    objectOutputStream1.writeObject("Mesaj geldi");
+                }
             }
-
 
 
        } catch (IOException | ClassNotFoundException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException  | BadPaddingException e) {
