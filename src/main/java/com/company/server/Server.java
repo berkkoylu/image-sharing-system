@@ -17,9 +17,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
-    public static final Set<User> userSet = new HashSet<>();
-    public static final Map<String, ImageDto> imageHashSet = new HashMap<>();
 
+    public static final Set<User> userSet = new HashSet<>();
+    public static final Map<String, ImageDto> imageHashMap = new HashMap<>();
 
     public static PublicKey publicKeyServer;
     public static PrivateKey privateKeyServer;
@@ -34,9 +34,9 @@ public class Server {
         publicKeyServer = keyPair.getPublic();
         privateKeyServer = keyPair.getPrivate();
 
-        String projectPath = "/Users/berkkoylu/IdeaProjects/image-sharing-system/image/server";
-        Path path = Paths.get(projectPath);
-        Files.createDirectories(path);
+//        String projectPath = "/Users/berkkoylu/IdeaProjects/image-sharing-system/image/server";
+//        Path path = Paths.get(projectPath);
+//        Files.createDirectories(path);
 
         System.out.println("Server is running");
         ExecutorService pool = Executors.newFixedThreadPool(500);

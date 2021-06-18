@@ -2,6 +2,7 @@ package com.company.client.model;
 
 import javax.crypto.spec.IvParameterSpec;
 import java.io.Serializable;
+import java.security.Key;
 
 public class ImageDto implements Serializable {
 
@@ -10,13 +11,27 @@ public class ImageDto implements Serializable {
     private byte [] digitalSignature ;
     private byte [] encryptedAESKey;
     private  byte [] ivParameterSpec;
+    private Key publicKey;
 
-    public ImageDto(String imageName,byte[] encryptedImage, byte[] digitalSignature, byte[] encryptedAESKey,  byte [] ivParameterSpec) {
+    public ImageDto() {
+
+    }
+
+
+    public ImageDto(String imageName, byte[] encryptedImage, byte[] digitalSignature, byte[] encryptedAESKey, byte [] ivParameterSpec) {
        this.imageName = imageName;
         this.encryptedImage = encryptedImage;
         this.digitalSignature = digitalSignature;
         this.encryptedAESKey = encryptedAESKey;
         this.ivParameterSpec = ivParameterSpec;
+    }
+
+    public Key getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(Key publicKey) {
+        this.publicKey = publicKey;
     }
 
     public String getImageName() {

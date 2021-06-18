@@ -53,26 +53,28 @@ public class ClientWriteThread extends Thread {
 
         System.out.println("For posting image enter post_image");
         System.out.println("For downloading image enter down_image");
+        System.out.print("Enter enter your command: ");
 
-        System.out.print("\nEnter enter your command: ");
 
         String text;
 
         do {
+
             text = scanner.nextLine();
             String[] subStringArray = text.split(" ");
             text = subStringArray[0];
             String imageName = subStringArray[1];
+
             byte[] digitalSignature =null;
             byte[] encryptedAESKey = null;
 
             if(text.equals("post_image")){
 
+
                 byte [] imageFile = getFile(imageName, "image/" + userName +"-image-folder/");
                 byte [] encryptedImage = aes.encryptPdfFile(secretKey,imageFile,ivParameterSpec);
                 MessageDigest  messageDigest = null;
                 Cipher cipher = null;
-
 
             try {
                 messageDigest = MessageDigest.getInstance("SHA-256");
@@ -80,6 +82,8 @@ public class ClientWriteThread extends Thread {
                 cipher = Cipher.getInstance("RSA");
                 cipher.init(Cipher.ENCRYPT_MODE, privateKey);
                 digitalSignature = cipher.doFinal(imageDigest);
+
+
                 encryptedAESKey = encryptAesKey(secretKey, publicKeyServer);
 
 
@@ -94,20 +98,28 @@ public class ClientWriteThread extends Thread {
 
 
                 try {
+                    objectOutputStream.writeObject("post_image");
                     objectOutputStream.writeObject(imageDto);
+                    System.out.println("Image " + imageName + " posted to server.");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }else if (text.equals("down_image")){
 
+                try {
+                    objectOutputStream.writeObject("down_image");
+                    objectOutputStream.writeObject(imageName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-
+                continue;
             }
 
 
+            System.out.print("Enter enter your command: ");
 
 
-            System.out.print("\nEnter enter your command: ");
         } while (!text.equals("bye"));
 
 

@@ -12,7 +12,7 @@ public class AES {
         new SecureRandom().nextBytes(iv);
         return new IvParameterSpec(iv);
     }
-    public  byte[] encryptPdfFile(SecretKey key, byte[] content, IvParameterSpec iv) {
+    public   byte[] encryptPdfFile(SecretKey key, byte[] content, IvParameterSpec iv) {
         Cipher cipher;
         byte[] encrypted = null;
         try {
@@ -26,12 +26,13 @@ public class AES {
 
     }
 
-    public  byte[] decryptPdfFile(SecretKey key, byte[] textCryp, IvParameterSpec iv) {
+    public  byte[] decryptPdfFile(SecretKey key, byte[] textCryp, byte[] iv) {
         Cipher cipher;
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
         byte[] decrypted = null;
         try {
             cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE, key,iv);
+            cipher.init(Cipher.DECRYPT_MODE, key,ivParameterSpec);
             decrypted = cipher.doFinal(textCryp);
         } catch (Exception e) {
             e.printStackTrace();

@@ -70,7 +70,7 @@ public class ClientServer  {
 
 
             new ClientWriteThread(objectOutputStream,socket, scanner, line, privateKey, (PublicKey) serverPublicKeyClient).start();
-            new ClientReadThread(objectInputStream,socket,scanner).start();
+            new ClientReadThread(objectInputStream,socket,scanner, line, privateKey).start();
 
 
 
