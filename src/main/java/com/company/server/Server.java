@@ -27,16 +27,11 @@ public class Server {
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
 
-        // write your code here
         KeyPairGenerator keyPairGenerator =  KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         publicKeyServer = keyPair.getPublic();
         privateKeyServer = keyPair.getPrivate();
-
-//        String projectPath = "/Users/berkkoylu/IdeaProjects/image-sharing-system/image/server";
-//        Path path = Paths.get(projectPath);
-//        Files.createDirectories(path);
 
         System.out.println("Server is running");
         ExecutorService pool = Executors.newFixedThreadPool(500);
